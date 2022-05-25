@@ -1,0 +1,176 @@
+---
+title: Analisis de datos COVID-19 en Costa Rica - Gráficos del paquete y tablas del
+  pquete ggplot2
+author: "Nataly Montoya"
+date: '2022-05-25'
+output: 
+  html_document:  
+    theme: readable  
+    toc: true  
+    toc_depth: 5  
+    toc_float:  
+      collapsed: false  
+      smooth_scroll: false   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Presentación 
+
+
+
+## Entradas
+
+```{r}
+covid_nacional <-
+  read_delim(
+    file = "C:/Users/gf0604-1/Graficación estadística/05_24_22_CSV_GENERAL.csv",
+    delim = ";",
+    col_select = c("FECHA", "positivos", "fallecidos", "RECUPERADOS", "activos")
+  )
+```
+```{r}
+covid_nacional <-
+  covid_nacional %>%
+  select(fecha = FECHA,
+         positivos,
+         fallecidos,
+         recuperados = RECUPERADOS,
+         activos) %>%
+  mutate(fecha = as.Date(fecha, format = "%d/%m/%Y"))
+```
+
+
+
+### Datos generales de casos
+
+## Procesamiento
+
+### Opciones generales 
+
+### Curación de datos 
+
+## Salidas
+
+### Casos acumulados nivel nacional
+
+```{r}
+# graphics - gráfico de línea
+plot(
+  covid_nacional$fecha,
+  covid_nacional$positivos,
+  type = "l",
+  xaxt = "n",
+  yaxt = "n",
+  main = "Casos acumulados de covid-19 en Costa Rica",
+  xlab = "Fecha",
+  ylab = "Casos",
+  col = "blue"
+)
+
+# Casos recuperados
+lines(covid_nacional$fecha, covid_nacional$recuperados, col="green")
+
+# Casos activos
+lines(covid_nacional$fecha, covid_nacional$activos, col="red")
+
+# Casos fallecidos
+lines(covid_nacional$fecha, covid_nacional$fallecidos, col="black")
+
+# Leyenda
+legend(
+  x = "topleft",
+  inset = 0.03,
+  legend = c("Positivos", "Recuperados", "Activos", "Fallecidos"),
+  col = c("blue", "green", "red", "black"),
+  lty = 1,
+  cex = 0.7)
+
+# Formato del eje X
+axis(side = 1,
+     covid_nacional$fecha,
+     tick = FALSE,
+     format(covid_nacional$fecha, "%m-%y"),
+     cex.axis = .7)
+
+# Formato del eje Y
+axis(
+  side = 2,
+  covid_nacional$positivos,
+  labels = TRUE,  
+  at = seq(0, 1000000, by = 200000),
+  cex.axis = .7
+)
+
+```
+
+```{r}
+ggplot2_covid_nacional_linea <-
+  covid_nacional %>%
+  ggplot(aes(x = fecha, y = value, color = variable)) +
+  ggtitle("Casos acumulados de covid-19 en Costa Rica") +
+  xlab("Fecha") +
+  ylab("Casos") +
+  geom_line(aes(y = positivos, color = "Positivos")) +
+  geom_line(aes(y = recuperados, color = "Recuperados")) +
+  geom_line(aes(y = activos, color = "Activos")) +
+  geom_line(aes(y = fallecidos, color = "Fallecidos")) +
+  scale_colour_manual(
+    "",
+    values = c(
+      "Positivos" = "blue",
+      "Recuperados" = "green",
+      "Activos" = "red",
+      "Fallecidos" = "black"
+    )
+  )
+
+ggplot2_covid_nacional_linea
+```
+
+#### Tabla 
+
+```{r}
+covid_nacional %>%
+  datatable(options = list(
+    pageLength = 5,
+    language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+  ))
+```
+
+#### Gráfico de lineas 
+
+#### Casos a nivel de cantonal
+
+##### Positivos 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
